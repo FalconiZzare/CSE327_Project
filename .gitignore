@@ -8,6 +8,9 @@
 .idea
 .claude
 .vscode
+.agents
+CLAUDE.md
+skills-lock.json
 
 # testing
 /coverage
