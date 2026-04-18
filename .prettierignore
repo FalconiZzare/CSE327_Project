@@ -1,0 +1,7 @@
+.next
+node_modules
+.idea
+.claude
+components/ui
+package-lock.json
+package.json
