@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
+import { HeroSection } from "@/components/home/hero-section";
+
+export const metadata: Metadata = {
+  title: "Crunch Time — Fresh food, delivered fast",
+  description: "Restaurant-quality meals made by expert chefs, brought straight to your door."
+};
+
 export default function Home() {
   return (
-    <div className="bg-background flex min-h-screen items-center justify-center">
-      <p className="text-muted-foreground text-sm">Home</p>
-    </div>
+    <>
+      <HeroSection />
+    </>
   );
 }

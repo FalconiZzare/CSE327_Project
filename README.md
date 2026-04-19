@@ -34,22 +34,22 @@ A full-stack food ordering and delivery platform connecting customers, chefs, de
 
 ## 🎓 Course Info & Team
 
-| | |
-|---|---|
-| **Course** | CSE327 · Software Engineering |
-| **Faculty** | Suri Dipannita Sayeed (SUS) |
-| **Section** | 9 |
-| **Institution** | North South University |
+|                 |                               |
+| --------------- | ----------------------------- |
+| **Course**      | CSE327 · Software Engineering |
+| **Faculty**     | Suri Dipannita Sayeed (SUS)   |
+| **Section**     | 9                             |
+| **Institution** | North South University        |
 
 ## 👥 Team
 
-| Name | ID |
-|---|---|
-| Talat Mahmud | 1813080642 |
-| Fardin Khan | 2411265042 |
-| Md. Abir Hasan | 2021833642 |
+| Name                | ID         |
+| ------------------- | ---------- |
+| Talat Mahmud        | 1813080642 |
+| Fardin Khan         | 2411265042 |
+| Md. Abir Hasan      | 2021833642 |
 | Munshi Saif Hossain | 2131139642 |
-| Ahamed Osman Asif | TBA |
+| Ahamed Osman Asif   | 2031080642 |
 
 ---
 
@@ -57,26 +57,26 @@ A full-stack food ordering and delivery platform connecting customers, chefs, de
 
 The platform is built around four distinct user roles, each with a purpose-built experience:
 
-| Role              | Flow |
-|-------------------|---|
+| Role              | Flow                                                                      |
+| ----------------- | ------------------------------------------------------------------------- |
 | 🛒 **Customer**   | Browse the menu, manage cart, checkout, track order progress in real-time |
-| 👨‍🍳 **Chef**    | Receive incoming orders, accept or deny, mark individual dishes as ready |
-| 🛵 **Delivery**   | Pick up completed orders, deliver, and mark as delivered |
-| ⚙️ **Management** | Manage the full dish catalog — add, edit, remove |
+| 👨‍🍳 **Chef**       | Receive incoming orders, accept or deny, mark individual dishes as ready  |
+| 🛵 **Delivery**   | Pick up completed orders, deliver, and mark as delivered                  |
+| ⚙️ **Management** | Manage the full dish catalog — add, edit, remove                          |
 
 ---
 
 ## 🛠 Tech Stack
 
-| Concern | Choice |
-|---|---|
-| **Framework** | Next.js 16 App Router + React 19 |
-| **Database** | Neon Postgres via Prisma v7 |
-| **Auth** | Better Auth — Google OAuth + Passkey |
-| **File Storage** | Vercel Blob |
-| **UI** | shadcn/ui · style `radix-lyra` · base color `zinc` |
-| **Styling** | Tailwind CSS v4 · CSS variables |
-| **Deployment** | Vercel |
+| Concern          | Choice                                             |
+| ---------------- | -------------------------------------------------- |
+| **Framework**    | Next.js 16 App Router + React 19                   |
+| **Database**     | Neon Postgres via Prisma v7                        |
+| **Auth**         | Better Auth — Google OAuth + Passkey               |
+| **File Storage** | Vercel Blob                                        |
+| **UI**           | shadcn/ui · style `radix-lyra` · base color `zinc` |
+| **Styling**      | Tailwind CSS v4 · CSS variables                    |
+| **Deployment**   | Vercel                                             |
 
 ---
 

@@ -139,7 +139,6 @@ export default function ThemePage() {
     <TooltipProvider>
       <div className="bg-background min-h-screen px-6 py-10">
         <div className="mx-auto flex max-w-5xl flex-col gap-12">
-          {/* Header */}
           <div className="flex flex-col gap-1">
             <h1 className="font-heading text-foreground text-2xl font-semibold">Theme Preview</h1>
             <p className="text-muted-foreground text-xs">
@@ -147,7 +146,6 @@ export default function ThemePage() {
             </p>
           </div>
 
-          {/* ── Colors ── */}
           <Section title="Color Palette" icon={<PaletteIcon className="size-4" />}>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
               {colors.map((c) => (
@@ -179,7 +177,6 @@ export default function ThemePage() {
             </div>
           </Section>
 
-          {/* ── Buttons ── */}
           <Section title="Button" icon={<ComponentIcon className="size-4" />}>
             <Row label="Variants">
               <Button variant="default">Default</Button>
@@ -196,16 +193,16 @@ export default function ThemePage() {
               <Button size="lg">Large</Button>
             </Row>
             <Row label="Icon sizes">
-              <Button size="icon-xs" variant="outline">
+              <Button size="icon-xs" variant="outline" aria-label="Notification (xs)">
                 <BellIcon />
               </Button>
-              <Button size="icon-sm" variant="outline">
+              <Button size="icon-sm" variant="outline" aria-label="Notification (sm)">
                 <BellIcon />
               </Button>
-              <Button size="icon" variant="outline">
+              <Button size="icon" variant="outline" aria-label="Notification">
                 <BellIcon />
               </Button>
-              <Button size="icon-lg" variant="outline">
+              <Button size="icon-lg" variant="outline" aria-label="Notification (lg)">
                 <BellIcon />
               </Button>
             </Row>
@@ -233,19 +230,18 @@ export default function ThemePage() {
             </Row>
           </Section>
 
-          {/* ── Avatar ── */}
           <Section title="Avatar" icon={<UserIcon className="size-4" />}>
             <Row label="Sizes">
               <Avatar size="sm">
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src="https://github.com/shadcn.png" alt={"shadcn"} />
                 <AvatarFallback>SC</AvatarFallback>
               </Avatar>
               <Avatar size="default">
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src="https://github.com/shadcn.png" alt={"shadcn"} />
                 <AvatarFallback>SC</AvatarFallback>
               </Avatar>
               <Avatar size="lg">
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src="https://github.com/shadcn.png" alt={"shadcn"} />
                 <AvatarFallback>SC</AvatarFallback>
               </Avatar>
             </Row>
@@ -270,7 +266,7 @@ export default function ThemePage() {
             <Row label="Group">
               <AvatarGroup>
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarImage src="https://github.com/shadcn.png" alt={"shadcn"} />
                   <AvatarFallback>A</AvatarFallback>
                 </Avatar>
                 <Avatar>
@@ -284,7 +280,6 @@ export default function ThemePage() {
             </Row>
           </Section>
 
-          {/* ── Card ── */}
           <Section title="Card">
             <div className="grid gap-4 sm:grid-cols-2">
               <Card>
@@ -317,28 +312,47 @@ export default function ThemePage() {
             </div>
           </Section>
 
-          {/* ── Form Inputs ── */}
           <Section title="Form Inputs">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-3">
                 <Row label="Input">
                   <div className="flex flex-1 flex-col gap-1.5">
                     <Label htmlFor="email-demo">Email</Label>
-                    <Input id="email-demo" type="email" placeholder="you@example.com" />
+                    <Input
+                      id="email-demo"
+                      type="email"
+                      placeholder="you@example.com"
+                      aria-label={"email-demo"}
+                    />
                   </div>
                 </Row>
                 <Row label="Disabled">
-                  <Input disabled placeholder="Disabled input" className="flex-1" />
+                  <Input
+                    disabled
+                    placeholder="Disabled input"
+                    className="flex-1"
+                    aria-label={"disabled"}
+                  />
                 </Row>
                 <Row label="Invalid">
-                  <Input aria-invalid placeholder="Invalid input" className="flex-1" />
+                  <Input
+                    aria-invalid
+                    placeholder="Invalid input"
+                    className="flex-1"
+                    aria-label={"invalid"}
+                  />
                 </Row>
               </div>
               <div className="flex flex-col gap-3">
                 <Row label="Textarea">
                   <div className="flex flex-1 flex-col gap-1.5">
                     <Label htmlFor="bio-demo">Bio</Label>
-                    <Textarea id="bio-demo" placeholder="Write something..." rows={3} />
+                    <Textarea
+                      id="bio-demo"
+                      placeholder="Write something..."
+                      rows={3}
+                      aria-label={"text-area"}
+                    />
                   </div>
                 </Row>
                 <Row label="Select">
@@ -359,7 +373,6 @@ export default function ThemePage() {
             </div>
           </Section>
 
-          {/* ── Skeleton ── */}
           <Section title="Skeleton">
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
@@ -373,7 +386,6 @@ export default function ThemePage() {
             </div>
           </Section>
 
-          {/* ── Spinner ── */}
           <Section title="Spinner">
             <div className="flex items-center gap-6">
               <Spinner className="size-4" />
@@ -383,7 +395,6 @@ export default function ThemePage() {
             </div>
           </Section>
 
-          {/* ── Separator ── */}
           <Section title="Separator">
             <div className="flex flex-col gap-4">
               <Separator />
@@ -395,7 +406,6 @@ export default function ThemePage() {
             </div>
           </Section>
 
-          {/* ── Tooltip ── */}
           <Section title="Tooltip">
             <Row label="Positions">
               <Tooltip>
@@ -433,7 +443,6 @@ export default function ThemePage() {
             </Row>
           </Section>
 
-          {/* ── Dropdown Menu ── */}
           <Section title="Dropdown Menu">
             <Row label="Default">
               <DropdownMenu>
@@ -467,7 +476,6 @@ export default function ThemePage() {
             </Row>
           </Section>
 
-          {/* ── Sheet ── */}
           <Section title="Sheet">
             <Row label="Sides">
               {(["right", "left", "top", "bottom"] as const).map((side) => (
@@ -497,7 +505,6 @@ export default function ThemePage() {
             </Row>
           </Section>
 
-          {/* ── Typography ── */}
           <Section title="Typography">
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-0.5">
@@ -527,7 +534,6 @@ export default function ThemePage() {
             </div>
           </Section>
 
-          {/* ── Border Radius ── */}
           <Section title="Border Radius">
             <div className="flex flex-wrap items-end gap-4">
               {[
@@ -548,7 +554,6 @@ export default function ThemePage() {
             </div>
           </Section>
 
-          {/* ── Info ── */}
           <div className="border-border bg-muted/40 flex items-start gap-2 rounded-none border px-4 py-3">
             <InfoIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
             <p className="text-muted-foreground text-xs">
