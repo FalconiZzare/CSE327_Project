@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
 
 const container = {
   initial: {},
@@ -27,6 +28,8 @@ const STATS = [
 ];
 
 export function HeroSection() {
+  const { data: session } = authClient.useSession();
+
   return (
     <section className="relative flex min-h-[calc(100vh-4rem)] items-center overflow-hidden">
       <Image
@@ -72,22 +75,25 @@ export function HeroSection() {
             <Link
               href="#"
               className={cn(
-                "bg-primary text-primary-foreground inline-flex h-12 items-center gap-2 rounded-full px-7 text-sm font-semibold",
-                "shadow-primary/30 hover:shadow-primary/40 shadow-lg transition-all duration-200 hover:brightness-110"
+                "bg-primary text-primary-foreground inline-flex h-12 items-center gap-2 px-7 text-sm font-semibold",
+                "shadow-primary/30 hover:shadow-primary/40 ring-primary/30 hover:ring-primary/60 shadow-lg ring-1 ring-offset-2 ring-offset-transparent transition-all duration-200 hover:brightness-110"
               )}
             >
               Order Now
               <ArrowRight className="size-4" />
             </Link>
-            <Link
-              href="/sign-in"
-              className={cn(
-                "inline-flex h-12 items-center gap-2 rounded-full border border-white/20 bg-white/8 px-7 text-sm font-semibold text-white/80 backdrop-blur-sm",
-                "transition-all duration-200 hover:border-white/30 hover:bg-white/[0.14] hover:text-white"
-              )}
-            >
-              Sign In
-            </Link>
+            {!session?.user && (
+              <Link
+                href="/sign-in"
+                className={cn(
+                  "bg-secondary text-secondary-foreground inline-flex h-12 items-center gap-2 px-7 text-sm font-semibold",
+                  "shadow-secondary/20 hover:shadow-secondary/30 ring-secondary/30 hover:ring-secondary/50 shadow-lg ring-1 ring-offset-2 ring-offset-transparent transition-all duration-200 hover:brightness-110"
+                )}
+              >
+                Sign In
+                <ArrowRight className="size-4" />
+              </Link>
+            )}
           </motion.div>
 
           <motion.div

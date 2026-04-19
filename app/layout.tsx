@@ -27,12 +27,13 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={cn("h-full", "antialiased", geistMono.variable, "font-sans", montserrat.variable)}
     >
       <body className="flex min-h-full flex-col">
         <Providers>
           <ConditionalHeader />
-          <main className="flex flex-1 flex-col">{children}</main>
+          <div className="flex flex-1 flex-col">{children}</div>
         </Providers>
       </body>
     </html>

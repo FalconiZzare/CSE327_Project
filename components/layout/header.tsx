@@ -12,7 +12,9 @@ import {
   Store,
   ShoppingCart,
   Menu,
-  LogIn
+  LogIn,
+  LogOut,
+  LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,8 +26,50 @@ import {
   SheetTitle,
   SheetTrigger
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LogoMark, LogoWordmark } from "@/components/logo";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { authClient } from "@/lib/auth-client";
+import { type AppRole } from "@/lib/access";
+import { cn, getInitials } from "@/lib/utils";
+import { useSignOut } from "@/hooks/use-sign-out";
+
+const ROLE_STYLES: Record<AppRole, string> = {
+  customer: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
+  chef: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400",
+  delivery: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
+  admin: "bg-primary/10 text-primary"
+};
+
+const ROLE_LABELS: Record<AppRole, string> = {
+  customer: "Customer",
+  chef: "Chef",
+  delivery: "Delivery",
+  admin: "Admin"
+};
+
+function RoleBadge({ role }: { role: string }) {
+  const key = (role ?? "customer") as AppRole;
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase",
+        ROLE_STYLES[key] ?? ROLE_STYLES.customer
+      )}
+    >
+      {ROLE_LABELS[key] ?? role}
+    </span>
+  );
+}
 
 const NAV_ITEMS = [
   { label: "Rice", icon: Soup, href: "/#rice" },
@@ -35,6 +79,134 @@ const NAV_ITEMS = [
   { label: "Drinks", icon: Wine, href: "/#drinks" },
   { label: "Street Food", icon: Store, href: "/#street-food" }
 ];
+
+function UserMenu() {
+  const { data: session, isPending } = authClient.useSession();
+  const handleSignOut = useSignOut();
+
+  if (isPending) {
+    return <Skeleton className="size-7 rounded-none" />;
+  }
+
+  if (session?.user) {
+    const initials = getInitials(session.user.name);
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="border-border/60 ring-ring/30 hover:ring-ring/60 cursor-pointer overflow-hidden border p-0 ring-1 ring-offset-1 ring-offset-transparent transition-shadow"
+          >
+            <Avatar className="size-full rounded-none after:rounded-none">
+              <AvatarImage
+                src={session.user.image ?? undefined}
+                alt={session.user.name ?? "User"}
+                className="rounded-none"
+              />
+              <AvatarFallback className="rounded-none text-xs font-semibold">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="bg-background w-52">
+          <DropdownMenuLabel className="font-normal">
+            <div className="mb-1.5">
+              <RoleBadge role={session.user.role ?? "customer"} />
+            </div>
+            <p className="truncate text-sm font-medium">{session.user.name}</p>
+            <p className="text-muted-foreground truncate text-xs">{session.user.email}</p>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild className="cursor-pointer gap-2">
+            <Link href="/dashboard">
+              <LayoutDashboard className="size-3.5" />
+              Dashboard
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={handleSignOut}
+            className="text-destructive focus:text-destructive cursor-pointer gap-2"
+          >
+            <LogOut className="size-3.5" />
+            Sign out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="border-border/60 hidden gap-1.5 border sm:flex"
+      asChild
+    >
+      <Link href="/sign-in">
+        <LogIn className="size-3.5" />
+        Sign In
+      </Link>
+    </Button>
+  );
+}
+
+function MobileAuthSection() {
+  const { data: session, isPending } = authClient.useSession();
+  const handleSignOut = useSignOut();
+
+  if (isPending) {
+    return <Skeleton className="h-9 w-full rounded-none" />;
+  }
+
+  if (session?.user) {
+    const initials = getInitials(session.user.name);
+
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3 px-1">
+          <Avatar className="size-7 shrink-0 rounded-none after:rounded-none">
+            <AvatarImage
+              src={session.user.image ?? undefined}
+              alt={session.user.name ?? "User"}
+              className="rounded-none"
+            />
+            <AvatarFallback className="rounded-none text-xs font-semibold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <div className="mb-0.5">
+              <RoleBadge role={session.user.role ?? "customer"} />
+            </div>
+            <p className="truncate text-sm font-medium">{session.user.name}</p>
+            <p className="text-muted-foreground truncate text-xs">{session.user.email}</p>
+          </div>
+        </div>
+        <Button
+          variant="outline"
+          className="text-destructive hover:text-destructive w-full gap-2"
+          onClick={handleSignOut}
+        >
+          <LogOut className="size-4" />
+          Sign out
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <Button variant="outline" className="w-full gap-2" asChild>
+      <Link href="/sign-in">
+        <LogIn className="size-4" />
+        Sign In
+      </Link>
+    </Button>
+  );
+}
 
 export function Header() {
   const [isHidden, setIsHidden] = useState(false);
@@ -70,7 +242,7 @@ export function Header() {
             <Link
               key={label}
               href={href}
-              className="group text-foreground/65 hover:bg-accent hover:text-foreground flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150"
+              className="group text-foreground/65 hover:bg-accent hover:text-foreground flex items-center gap-1.5 rounded-none px-3 py-2 text-sm font-medium transition-all duration-150"
             >
               <Icon
                 className="text-primary size-3.75 shrink-0 transition-transform duration-150 group-hover:scale-110"
@@ -83,17 +255,7 @@ export function Header() {
 
         <div className="flex shrink-0 items-center gap-2">
           <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="sm"
-            className="border-border/60 hidden gap-1.5 border sm:flex"
-            asChild
-          >
-            <Link href="/sign-in">
-              <LogIn className="size-3.5" />
-              Sign In
-            </Link>
-          </Button>
+          <UserMenu />
 
           <div className="relative">
             <Button variant="default" size="sm" className="gap-1.5" asChild>
@@ -131,7 +293,7 @@ export function Header() {
                   <SheetClose asChild key={label}>
                     <Link
                       href={href}
-                      className="text-foreground/65 hover:bg-accent hover:text-foreground flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
+                      className="text-foreground/65 hover:bg-accent hover:text-foreground flex items-center gap-3 rounded-none px-3 py-2.5 text-sm font-medium transition-colors"
                     >
                       <Icon className="text-primary size-5 shrink-0" strokeWidth={1.75} />
                       <span>{label}</span>
@@ -141,12 +303,7 @@ export function Header() {
               </nav>
 
               <div className="border-border/50 mt-auto flex flex-col gap-2 border-t p-4">
-                <Button variant="outline" className="w-full gap-2" asChild>
-                  <Link href="/sign-in">
-                    <LogIn className="size-4" />
-                    Sign In
-                  </Link>
-                </Button>
+                <MobileAuthSection />
                 <Button variant="default" className="w-full gap-2" asChild>
                   <Link href="/cart">
                     <ShoppingCart className="size-4" />

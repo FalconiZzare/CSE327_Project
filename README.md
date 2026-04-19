@@ -32,7 +32,7 @@ A full-stack food ordering and delivery platform connecting customers, chefs, de
 
 ---
 
-## 🎓 Course Info & Team
+## 🎓 Course Info
 
 |                 |                               |
 | --------------- | ----------------------------- |

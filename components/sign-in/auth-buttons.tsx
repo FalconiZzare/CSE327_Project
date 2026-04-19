@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { Fingerprint } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 function GoogleIcon() {
   return (
@@ -37,7 +40,54 @@ function Divider({ label }: { label: string }) {
   );
 }
 
+const PASSKEY_ERRORS: Record<string, string> = {
+  AUTH_CANCELLED: "Sign-in was cancelled.",
+  PASSKEY_NOT_FOUND: "No passkey found for this device. Try signing in with Google instead.",
+  AUTHENTICATION_FAILED: "Couldn't verify your passkey. Please try again.",
+  CHALLENGE_NOT_FOUND: "Session expired — please refresh and try again.",
+  UNABLE_TO_CREATE_SESSION: "Signed in but couldn't start your session. Please try again.",
+  PREVIOUSLY_REGISTERED: "This passkey is already linked to your account.",
+  REGISTRATION_CANCELLED: "Passkey setup was cancelled.",
+  UNKNOWN_ERROR: "Something went wrong. Please try again.",
+  SESSION_REQUIRED: "You must be signed in to add a passkey.",
+  BAD_REQUEST: "Invalid request. Please try again.",
+  UNAUTHORIZED: "Account not found. Sign in with Google first.",
+  INTERNAL_SERVER_ERROR: "Server error — please try again in a moment.",
+  FAILED_TO_VERIFY_REGISTRATION: "Passkey registration failed. Please try again."
+};
+
+function getPasskeyError(code?: string | null): string {
+  return (code && PASSKEY_ERRORS[code]) ?? "Passkey sign-in failed. Please try again.";
+}
+
 export function AuthButtons() {
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
+
+  async function handleGoogle() {
+    setIsGoogleLoading(true);
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/"
+    });
+    setIsGoogleLoading(false);
+  }
+
+  async function handlePasskey() {
+    setIsPasskeyLoading(true);
+    const result = await authClient.signIn.passkey();
+    if (result?.error) {
+      const code = "code" in result.error ? result.error.code : undefined;
+      const message = getPasskeyError(code);
+      if (code === "AUTH_CANCELLED") {
+        toast.warning(message);
+      } else {
+        toast.error(message);
+      }
+    }
+    setIsPasskeyLoading(false);
+  }
+
   return (
     <div className="space-y-5">
       <div className="space-y-1">
@@ -51,20 +101,24 @@ export function AuthButtons() {
 
       <button
         type="button"
-        className="lg:border-border flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-lg border border-white/25 bg-white px-4 text-sm font-medium text-zinc-800 shadow-sm transition-colors hover:bg-zinc-50 active:scale-[0.99] lg:shadow-sm"
+        onClick={handleGoogle}
+        disabled={isGoogleLoading || isPasskeyLoading}
+        className="lg:border-border flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-none border border-white/25 bg-white px-4 text-sm font-medium text-zinc-800 shadow-sm transition-colors hover:bg-zinc-50 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 lg:shadow-sm"
       >
         <GoogleIcon />
-        Continue with Google
+        {isGoogleLoading ? "Redirecting…" : "Continue with Google"}
       </button>
 
       <Divider label="or" />
 
       <button
         type="button"
-        className="lg:border-border lg:bg-background lg:text-foreground lg:hover:bg-accent flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-lg border border-white/20 bg-white/10 px-4 text-sm font-medium text-white transition-colors hover:bg-white/20 active:scale-[0.99]"
+        onClick={handlePasskey}
+        disabled={isGoogleLoading || isPasskeyLoading}
+        className="lg:border-border lg:bg-background lg:text-foreground lg:hover:bg-accent flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-none border border-white/20 bg-white/10 px-4 text-sm font-medium text-white transition-colors hover:bg-white/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
       >
         <Fingerprint className="text-primary size-4" strokeWidth={1.75} />
-        Sign in with Passkey
+        {isPasskeyLoading ? "Authenticating…" : "Sign in with Passkey"}
       </button>
 
       <Divider label="disclaimer" />
