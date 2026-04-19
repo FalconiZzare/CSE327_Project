@@ -4,7 +4,9 @@ import { defaultStatements, adminAc } from "better-auth/plugins/admin/access";
 const statement = {
   ...defaultStatements,
   order: ["create", "view", "update", "cancel"],
-  dish: ["create", "view", "update", "delete"]
+  dish: ["create", "view", "update", "delete"],
+  kitchen: ["access"],
+  deliveryQueue: ["access"]
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -16,12 +18,14 @@ export const customer = ac.newRole({
 
 export const chef = ac.newRole({
   order: ["view", "update"],
-  dish: ["view"]
+  dish: ["view"],
+  kitchen: ["access"]
 });
 
 export const delivery = ac.newRole({
   order: ["view", "update"],
-  dish: ["view"]
+  dish: ["view"],
+  deliveryQueue: ["access"]
 });
 
 export const adminRole = ac.newRole({

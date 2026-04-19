@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           role: session.user.role ?? "customer"
         }}
       />
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset className="min-w-0 overflow-x-clip">{children}</SidebarInset>
     </SidebarProvider>
   );
 }

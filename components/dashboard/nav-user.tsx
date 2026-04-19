@@ -40,7 +40,7 @@ interface NavUserProps {
 }
 
 export function NavUser({ user }: NavUserProps) {
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const { resolvedTheme, setTheme } = useTheme();
   const handleSignOut = useSignOut();
 
@@ -77,7 +77,7 @@ export function NavUser({ user }: NavUserProps) {
             )}
             side={isMobile ? "bottom" : "right"}
             align="end"
-            sideOffset={isMobile ? 4 : 14}
+            sideOffset={14}
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-3 px-3 py-3">
@@ -106,19 +106,22 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/profile">
+                <Link href="/dashboard/profile" onClick={() => setOpenMobile(false)}>
                   <User className="size-4" />
                   Update Profile
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/profile#passkeys">
+                <Link href="/dashboard/profile#passkeys" onClick={() => setOpenMobile(false)}>
                   <KeyRound className="size-4" />
                   Manage Passkeys
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                onClick={() => {
+                  setTheme(resolvedTheme === "dark" ? "light" : "dark");
+                  setOpenMobile(false);
+                }}
                 className="cursor-pointer"
               >
                 {resolvedTheme === "dark" ? (
@@ -131,7 +134,10 @@ export function NavUser({ user }: NavUserProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={handleSignOut}
+              onClick={() => {
+                handleSignOut();
+                setOpenMobile(false);
+              }}
               className="text-destructive focus:text-destructive cursor-pointer"
             >
               <LogOut className="size-4" />

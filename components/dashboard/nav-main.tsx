@@ -8,7 +8,8 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
+  useSidebar
 } from "@/components/ui/sidebar";
 import type { AppRole } from "@/lib/access";
 
@@ -51,6 +52,7 @@ const navByRole: Record<AppRole, NavItem[]> = {
 export function NavMain({ role }: { role: AppRole }) {
   const pathname = usePathname();
   const items = navByRole[role] ?? customerNav;
+  const { setOpenMobile } = useSidebar();
 
   return (
     <SidebarGroup>
@@ -59,7 +61,7 @@ export function NavMain({ role }: { role: AppRole }) {
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
-              <Link href={item.url}>
+              <Link href={item.url} onClick={() => setOpenMobile(false)}>
                 <item.icon />
                 <span>{item.title}</span>
               </Link>

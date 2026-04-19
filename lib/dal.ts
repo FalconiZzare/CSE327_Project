@@ -14,9 +14,34 @@ export async function requireAuth() {
   return session;
 }
 
-export async function requireRole(...allowed: AppRole[]) {
+async function resolvePermission(permissions: Record<string, string[]>) {
+  const session = await getSession();
+  const role = (session?.user.role ?? "customer") as AppRole;
+  const result = await auth.api.userHasPermission({
+    body: { role, permissions }
+  });
+  return { session, allowed: result.success };
+}
+
+export async function checkPermission(permissions: Record<string, string[]>): Promise<boolean> {
+  const { allowed } = await resolvePermission(permissions);
+  return allowed;
+}
+
+export async function requirePermission(permissions: Record<string, string[]>) {
   const session = await requireAuth();
-  const role = session.user.role as AppRole;
-  if (!allowed.includes(role)) redirect("/dashboard");
+  const result = await auth.api.userHasPermission({
+    body: { role: (session.user.role ?? "customer") as AppRole, permissions }
+  });
+  if (!result.success) throw new Error("Forbidden");
+  return session;
+}
+
+export async function guardPermission(permissions: Record<string, string[]>) {
+  const session = await requireAuth();
+  const result = await auth.api.userHasPermission({
+    body: { role: (session.user.role ?? "customer") as AppRole, permissions }
+  });
+  if (!result.success) redirect("/dashboard");
   return session;
 }

@@ -10,7 +10,7 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { updateUserRole } from "./actions";
+import { updateUserRole } from "@/actions/users/update-role";
 import type { AppRole } from "@/lib/access";
 
 const ROLES: AppRole[] = ["customer", "chef", "delivery", "admin"];
@@ -63,6 +63,7 @@ export function RoleSelect({ userId, role, isSelf }: RoleSelectProps) {
   return (
     <Select value={current} onValueChange={handleChange} disabled={isPending}>
       <SelectTrigger
+        aria-label="User role"
         className={cn(
           "h-auto w-fit gap-1.5 rounded-none border-0 px-2 py-0.5 text-[10px] font-semibold tracking-widest uppercase shadow-none ring-0 focus:ring-0 focus-visible:ring-0",
           ROLE_STYLES[current],

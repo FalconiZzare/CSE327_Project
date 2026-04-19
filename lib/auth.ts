@@ -17,7 +17,15 @@ export const auth = betterAuth({
     }
   },
   plugins: [
-    passkey(),
+    passkey({
+      rpID: process.env.PASSKEY_RP_ID!,
+      rpName: "crunch-time",
+      origin: process.env.BETTER_AUTH_URL!,
+      authenticatorSelection: {
+        residentKey: "required",
+        userVerification: "preferred"
+      }
+    }),
     nextCookies(),
     adminPlugin({
       ac,
