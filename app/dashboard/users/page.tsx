@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { guardPermission } from "@/lib/dal";
 import prisma from "@/lib/prisma";
 import { getInitials } from "@/lib/utils";
@@ -24,6 +26,14 @@ const STAT_LABELS: Record<AppRole, string> = {
 export default async function UsersPage() {
   const session = await guardPermission({ user: ["list"] });
 
+  return (
+    <Suspense fallback={<UsersContentSkeleton />}>
+      <UsersContent selfId={session.user.id} />
+    </Suspense>
+  );
+}
+
+async function UsersContent({ selfId }: { selfId: string }) {
   const users = await prisma.user.findMany({
     select: {
       id: true,
@@ -90,7 +100,7 @@ export default async function UsersPage() {
                 day: "numeric",
                 year: "numeric"
               }).format(new Date(user.createdAt));
-              const isSelf = user.id === session.user.id;
+              const isSelf = user.id === selfId;
 
               return (
                 <tr key={user.id} className="hover:bg-muted/40 transition-colors">
@@ -136,6 +146,39 @@ export default async function UsersPage() {
             No users found.
           </div>
         )}
+      </div>
+    </>
+  );
+}
+
+function UsersContentSkeleton() {
+  return (
+    <>
+      <div className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+        <Skeleton className="h-6 w-6" />
+        <Skeleton className="mx-1 h-4 w-px" />
+        <Skeleton className="h-4 w-12" />
+        <Skeleton className="ml-auto h-4 w-14" />
+      </div>
+      <div className="border-b px-6 py-3">
+        <div className="flex gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-3.5 w-20" />
+          ))}
+        </div>
+      </div>
+      <div className="divide-y">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3 px-6 py-3">
+            <Skeleton className="size-8 shrink-0" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-48" />
+            </div>
+            <Skeleton className="h-8 w-28" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+        ))}
       </div>
     </>
   );

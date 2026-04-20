@@ -124,9 +124,9 @@ export function AdminOverview({
               <Link
                 key={href}
                 href={href}
-                className="bg-card group hover:bg-muted/50 flex items-center gap-4 rounded-xl border px-5 py-4 transition-colors"
+                className="bg-card group hover:bg-muted/50 flex items-center gap-4 border px-5 py-4 transition-colors"
               >
-                <div className="bg-primary/10 shrink-0 rounded-xl p-3">
+                <div className="bg-primary/10 shrink-0 p-3">
                   <Icon className="text-primary h-5 w-5" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -151,7 +151,7 @@ export function AdminOverview({
               View all
             </Link>
           </div>
-          <div className="bg-card rounded-xl border">
+          <div className="bg-card border">
             {recentDishes.length === 0 ? (
               <div className="text-muted-foreground flex h-32 items-center justify-center text-sm">
                 No dishes yet
@@ -162,7 +162,7 @@ export function AdminOverview({
                   <li key={dish.id}>
                     <Link
                       href={`/dashboard/dishes/${dish.id}/edit`}
-                      className="hover:bg-muted/50 flex items-center gap-3 px-4 py-3 transition-colors first:rounded-t-xl last:rounded-b-xl"
+                      className="hover:bg-muted/50 flex items-center gap-3 px-4 py-3 transition-colors"
                     >
                       <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-lg">
                         {dish.imageUrl ? (

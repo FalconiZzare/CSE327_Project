@@ -58,9 +58,9 @@ export function DeliveryOverview({ user }: DeliveryOverviewProps) {
         </h2>
         <Link
           href="/dashboard/deliveries"
-          className="bg-card group hover:bg-muted/50 flex items-center gap-4 rounded-xl border px-5 py-4 transition-colors"
+          className="bg-card group hover:bg-muted/50 flex items-center gap-4 border px-5 py-4 transition-colors"
         >
-          <div className="bg-primary/10 shrink-0 rounded-xl p-3">
+          <div className="bg-primary/10 shrink-0 p-3">
             <Truck className="text-primary h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
@@ -75,8 +75,8 @@ export function DeliveryOverview({ user }: DeliveryOverviewProps) {
         <h2 className="text-muted-foreground mb-3 text-[11px] font-semibold tracking-widest uppercase">
           Active Delivery
         </h2>
-        <div className="bg-card flex flex-col items-center justify-center gap-4 rounded-xl border px-6 py-14 text-center">
-          <div className="bg-muted rounded-full p-4">
+        <div className="bg-card flex flex-col items-center justify-center gap-4 border px-6 py-14 text-center">
+          <div className="bg-muted p-4">
             <Truck className="text-muted-foreground h-8 w-8" />
           </div>
           <div className="space-y-1">

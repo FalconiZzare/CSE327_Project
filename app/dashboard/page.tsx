@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { requireAuth } from "@/lib/dal";
 import prisma from "@/lib/prisma";
 import type { AppRole } from "@/lib/access";
@@ -13,19 +15,32 @@ export const metadata: Metadata = {
   title: "Dashboard | Crunch Time"
 };
 
-const Header = () => (
-  <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-    <SidebarTrigger className="-ml-1 cursor-pointer" />
-    <Separator orientation="vertical" className="mx-1 h-4" />
-    <span className="text-sm font-medium">Overview</span>
-  </header>
-);
-
 export default async function DashboardPage() {
   const session = await requireAuth();
   const role = session.user.role as AppRole;
   const user = { name: session.user.name, createdAt: session.user.createdAt };
 
+  return (
+    <>
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+        <SidebarTrigger className="-ml-1 cursor-pointer" />
+        <Separator orientation="vertical" className="mx-1 h-4" />
+        <span className="text-sm font-medium">Overview</span>
+      </header>
+      <Suspense fallback={<OverviewSkeleton role={role} />}>
+        <OverviewContent role={role} user={user} />
+      </Suspense>
+    </>
+  );
+}
+
+async function OverviewContent({
+  role,
+  user
+}: {
+  role: AppRole;
+  user: { name: string; createdAt: Date | string };
+}) {
   if (role === "admin") {
     const [dishRows, userRoles, totalDishes, availableDishes] = await Promise.all([
       prisma.dish.findMany({
@@ -49,44 +64,59 @@ export default async function DashboardPage() {
     const recentDishes = dishRows.map((d) => ({ ...d, price: Number(d.price) }));
 
     return (
-      <>
-        <Header />
-        <AdminOverview
-          user={user}
-          totalDishes={totalDishes}
-          availableDishes={availableDishes}
-          totalUsers={userRoles.length}
-          customerCount={customerCount}
-          recentDishes={recentDishes}
-        />
-      </>
+      <AdminOverview
+        user={user}
+        totalDishes={totalDishes}
+        availableDishes={availableDishes}
+        totalUsers={userRoles.length}
+        customerCount={customerCount}
+        recentDishes={recentDishes}
+      />
     );
   }
 
-  if (role === "chef") {
-    return (
-      <>
-        <Header />
-        <ChefOverview user={user} />
-      </>
-    );
-  }
-
-  if (role === "delivery") {
-    return (
-      <>
-        <Header />
-        <DeliveryOverview user={user} />
-      </>
-    );
-  }
+  if (role === "chef") return <ChefOverview user={user} />;
+  if (role === "delivery") return <DeliveryOverview user={user} />;
 
   const availableDishCount = await prisma.dish.count({ where: { available: true } });
+  return <CustomerOverview user={user} availableDishCount={availableDishCount} />;
+}
 
+function OverviewSkeleton({ role }: { role: AppRole }) {
+  const isAdmin = role === "admin";
   return (
-    <>
-      <Header />
-      <CustomerOverview user={user} availableDishCount={availableDishCount} />
-    </>
+    <div className="flex flex-1 flex-col gap-8 p-6">
+      <div className="space-y-1.5">
+        <Skeleton className="h-8 w-72" />
+        <Skeleton className="h-4 w-52" />
+      </div>
+      <div>
+        <Skeleton className="mb-3 h-3 w-24" />
+        <div className={`grid grid-cols-2 gap-4 ${isAdmin ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+          {Array.from({ length: isAdmin ? 4 : 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-28" />
+          ))}
+        </div>
+      </div>
+      {isAdmin ? (
+        <div className="grid gap-6 lg:grid-cols-5">
+          <div className="space-y-3 lg:col-span-3">
+            <Skeleton className="h-3 w-28" />
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-20" />
+            ))}
+          </div>
+          <div className="lg:col-span-2">
+            <Skeleton className="mb-3 h-3 w-28" />
+            <Skeleton className="h-52" />
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <Skeleton className="h-3 w-28" />
+          <Skeleton className="h-20" />
+        </div>
+      )}
+    </div>
   );
 }

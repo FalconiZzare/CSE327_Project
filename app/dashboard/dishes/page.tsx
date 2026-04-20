@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Plus, Pencil, LockKeyhole, UtensilsCrossed } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { requireAuth, checkPermission } from "@/lib/dal";
 import prisma from "@/lib/prisma";
@@ -44,6 +46,14 @@ export default async function DishesPage() {
     );
   }
 
+  return (
+    <Suspense fallback={<DishesContentSkeleton />}>
+      <DishesContent />
+    </Suspense>
+  );
+}
+
+async function DishesContent() {
   const dishes = await prisma.dish.findMany({ orderBy: { createdAt: "desc" } });
   const availableCount = dishes.filter((d) => d.available).length;
 
@@ -175,6 +185,42 @@ export default async function DishesPage() {
           </table>
         </div>
       )}
+    </>
+  );
+}
+
+function DishesContentSkeleton() {
+  return (
+    <>
+      <div className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+        <Skeleton className="h-6 w-6" />
+        <Skeleton className="mx-1 h-4 w-px" />
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="ml-auto h-4 w-14" />
+        <Skeleton className="ml-3 h-8 w-24" />
+      </div>
+      <div className="border-b px-6 py-3">
+        <div className="flex gap-6">
+          <Skeleton className="h-3.5 w-14" />
+          <Skeleton className="h-3.5 w-20" />
+          <Skeleton className="h-3.5 w-24" />
+        </div>
+      </div>
+      <div className="divide-y">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3 px-6 py-3">
+            <Skeleton className="h-11 w-11 shrink-0 rounded-lg" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-4 w-36" />
+              <Skeleton className="h-3 w-52" />
+            </div>
+            <Skeleton className="h-3.5 w-16" />
+            <Skeleton className="h-3.5 w-14" />
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-8 w-16" />
+          </div>
+        ))}
+      </div>
     </>
   );
 }
